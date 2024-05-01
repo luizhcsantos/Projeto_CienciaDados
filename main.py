@@ -3,14 +3,18 @@ import numpy as np
 import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt 
-from utilities import preprocess_text, create_wordcloud, freq_words, ordenar_palavras_por_frequencia
-from utilities import carregar_palavras_csv, calcular_distancia_entre_palavras, calcular_correlacao_entre_conjuntos
+from utilities import preprocess_text, create_wordcloud, freq_words, ordenar_palavras_frequencia
+from utilities import carregar_palavras_csv, calcular_distancia_entre_palavras, correlacao_conjuntos
+from utilities import mesclar_csv, distancia_jaccard
+from utilities import distancia_chebyshev, distancia_euclidiana, distancia_manhattan
 import time
 
 from nltk.tokenize import word_tokenize
 from nltk.probability import FreqDist
 
 def main():
+
+   # limpeza do texto 
    # df_original=pd.read_csv('data/fake_and_real_news.csv')
    
    # inicio = time.time()
@@ -31,6 +35,8 @@ def main():
    # print("Tempo de término:", fim)
    # print("Tempo total de execução:", tempo_total)
 
+   # ************************************************
+
    # # leitura e normalização da coluna 'label' do dataframe original 
    # df_clean=pd.read_csv('cleaned_data/dados_limpos.csv')
    # mapeamento = {'Real': 1, 'Fake': 0}
@@ -44,7 +50,7 @@ def main():
    # wordcloud = create_wordcloud(text)
 
    # *********************************************************
-
+   # ordenação das palavras das noticias por frequencia 
    # df_clean=pd.read_csv('cleaned_data/dados_limpos.csv')
 
    # fake_news = df_clean[df_clean['label'] == 0]['Text']
@@ -64,13 +70,28 @@ def main():
    # df_palavras_frequentes.to_csv('cleaned_data/real_palavras_frequentes.csv', index=False)
 
    # ***********************************************************
+   # calculo de distancias 
 
+   # distancia de jaccard entre as palavras unicas nos conjuntos de palavras presentes nas noticias reais e fake 
    df_fake=pd.read_csv('cleaned_data/fake_palavras_frequentes.csv')
    df_real=pd.read_csv('cleaned_data/real_palavras_frequentes.csv')
-   correlacoes = calcular_correlacao_entre_conjuntos(df_fake, df_real)
-   # Mostrar as correlações
-   for palavra, correlacao in correlacoes.items():
-      print(f'Correlação para "{palavra}": {correlacao}')
+   
+   distancia_jaccard = distancia_jaccard(df_fake, df_real)
+   print("Distância de Jaccard entre os conjuntos fake e real:", distancia_jaccard)
+
+
+   # ************************************************************
+   # distancia euclidiana
+   distancia_euclidiana = distancia_euclidiana(df_fake, df_fake)
+   print("Distância Euclidiana entre os conjuntos fake e real:", distancia_euclidiana)
+
+   # distancia de manhattan 
+   distancia_manhattan = distancia_manhattan(df_fake, df_real)
+   print("Distância de Manhattan entre os conjuntos fake e real:", distancia_manhattan)
+
+   # distancia de chebyshev
+   distancia_chebyshev = distancia_chebyshev(df_fake, df_real)
+   print("Distância de Chebyshev entre os conjuntos fake e real:", distancia_chebyshev)
 
 
 if __name__ == "__main__":
