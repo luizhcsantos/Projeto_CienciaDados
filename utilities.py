@@ -54,14 +54,20 @@ def freq_words(text):
     return result
 
 
-def ordenar_serie_por_frequencia(serie):
-    # Contar a frequência de cada palavra na série
-    contagem_palavras = Counter(serie)
-    
-    # Ordenar as palavras com base em suas contagens (frequência)
-    palavras_ordenadas = sorted(contagem_palavras.items(), key=lambda x: x[1], reverse=True)
-    
-    # Salvar a frequência de cada palavra em um dicionário
-    frequencia_palavras = {palavra: frequencia for palavra, frequencia in palavras_ordenadas}
-    
-    return palavras_ordenadas, frequencia_palavras
+def ordenar_palavras_por_frequencia(df, label_column, text_column, label_type, min_freq=5):
+    # Filtrar os dados pela coluna de rótulo
+    text = df[df[label_column] == label_type][text_column]
+
+    # Criar uma lista com todas as palavras das fake news
+    all_words = ' '.join(text).split()
+
+    # Contar a frequência das palavras
+    word_freq = Counter(all_words)
+
+    # Filtrar as palavras com frequência maior que min_freq
+    filtered_word_freq = {word: freq for word, freq in word_freq.items() if freq > min_freq}
+
+    # Ordenar as palavras pela frequência
+    sorted_word_freq = sorted(filtered_word_freq.items(), key=lambda x: x[1], reverse=True)
+
+    return sorted_word_freq
