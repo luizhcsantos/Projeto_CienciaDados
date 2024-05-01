@@ -4,6 +4,7 @@ import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt 
 from utilities import preprocess_text, create_wordcloud, freq_words, ordenar_palavras_por_frequencia
+from utilities import carregar_palavras_csv, calcular_distancia_entre_palavras, calcular_correlacao_entre_conjuntos
 import time
 
 from nltk.tokenize import word_tokenize
@@ -42,23 +43,35 @@ def main():
    # print(text)
    # wordcloud = create_wordcloud(text)
 
-   df_clean=pd.read_csv('cleaned_data/dados_limpos.csv')
+   # *********************************************************
 
-   fake_news = df_clean[df_clean['label'] == 0]['Text']
-   real_news = ' '.join(df_clean[df_clean['label'] == 1]['Text'])
+   # df_clean=pd.read_csv('cleaned_data/dados_limpos.csv')
 
-   resultado_fake = ordenar_palavras_por_frequencia(df_clean, 'label', 'Text', 0)
-   # Converter o dicionário de palavras frequentes ordenadas em um DataFrame
-   df_palavras_frequentes = pd.DataFrame(resultado_fake, columns=['Word', 'Frequency'])
-   # Salvar o DataFrame em um arquivo CSV
-   df_palavras_frequentes.to_csv('cleaned_data/fake_palavras_frequentes.csv', index=False)
+   # fake_news = df_clean[df_clean['label'] == 0]['Text']
+   # real_news = ' '.join(df_clean[df_clean['label'] == 1]['Text'])
+
+   # resultado_fake = ordenar_palavras_por_frequencia(df_clean, 'label', 'Text', 0)
+   # # Converter o dicionário de palavras frequentes ordenadas em um DataFrame
+   # df_palavras_frequentes = pd.DataFrame(resultado_fake, columns=['Word', 'Frequency'])
+   # # Salvar o DataFrame em um arquivo CSV
+   # df_palavras_frequentes.to_csv('cleaned_data/fake_palavras_frequentes.csv', index=False)
 
    
-   resultado_real = ordenar_palavras_por_frequencia(df_clean, 'label', 'Text', 1)
-   # Converter o dicionário de palavras frequentes ordenadas em um DataFrame
-   df_palavras_frequentes = pd.DataFrame(resultado_real, columns=['Word', 'Frequency'])
-   # Salvar o DataFrame em um arquivo CSV
-   df_palavras_frequentes.to_csv('cleaned_data/real_palavras_frequentes.csv', index=False)
+   # resultado_real = ordenar_palavras_por_frequencia(df_clean, 'label', 'Text', 1)
+   # # Converter o dicionário de palavras frequentes ordenadas em um DataFrame
+   # df_palavras_frequentes = pd.DataFrame(resultado_real, columns=['Word', 'Frequency'])
+   # # Salvar o DataFrame em um arquivo CSV
+   # df_palavras_frequentes.to_csv('cleaned_data/real_palavras_frequentes.csv', index=False)
+
+   # ***********************************************************
+
+   df_fake=pd.read_csv('cleaned_data/fake_palavras_frequentes.csv')
+   df_real=pd.read_csv('cleaned_data/real_palavras_frequentes.csv')
+   correlacoes = calcular_correlacao_entre_conjuntos(df_fake, df_real)
+   # Mostrar as correlações
+   for palavra, correlacao in correlacoes.items():
+      print(f'Correlação para "{palavra}": {correlacao}')
+
 
 if __name__ == "__main__":
     main()

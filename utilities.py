@@ -1,3 +1,4 @@
+import pandas as pd
 import nltk
 from nltk.tokenize import word_tokenize
 from nltk.stem.porter import PorterStemmer
@@ -7,7 +8,9 @@ import os
 from wordcloud import WordCloud
 from collections import Counter 
 from itertools import repeat, chain
-import re
+from scipy.spatial.distance import cosine
+import numpy as np
+from scipy.stats import pearsonr
 
 nltk.data.path.append(os.path.join(os.getcwd(), 'nltk_data'))
 nltk.download('popular', download_dir='nltk_data')
@@ -71,3 +74,41 @@ def ordenar_palavras_por_frequencia(df, label_column, text_column, label_type, m
     sorted_word_freq = sorted(filtered_word_freq.items(), key=lambda x: x[1], reverse=True)
 
     return sorted_word_freq
+
+
+def carregar_palavras_csv(nome_arquivo):
+    df = pd.read_csv(nome_arquivo)
+    all_words = ' '.join(df['Text']).split()
+    word_freq = Counter(all_words)
+    return word_freq
+
+
+def calcular_distancia_entre_palavras(fake_freq, real_freq):
+    fake_words = list(fake_freq.keys())
+    real_words = list(real_freq.keys())
+    
+    all_words = list(set(fake_words).union(set(real_words)))
+    
+    fake_vector = np.array([fake_freq[word] if word in fake_words else 0 for word in all_words])
+    real_vector = np.array([real_freq[word] if word in real_words else 0 for word in all_words])
+    
+    return cosine(fake_vector, real_vector)
+
+def calcular_correlacao_entre_conjuntos(df_fake, df_real):
+
+    # Fundir os DataFrames usando a coluna "Word" como índice
+    df_fake.set_index('Word', inplace=True)
+    df_real.set_index('Word', inplace=True)
+
+    # Encontrar as palavras comuns entre os dois conjuntos
+    palavras_comuns = df_fake.index.intersection(df_real.index)
+
+    # Calcular a correlação de Pearson entre as frequências das palavras
+    correlacoes = {}
+    for palavra in palavras_comuns:
+        freq_fake = df_fake.loc[palavra, 'Frequency']
+        freq_real = df_real.loc[palavra, 'Frequency']
+        correlacao, _ = pearsonr(freq_fake, freq_real)
+        correlacoes[palavra] = correlacao
+
+    return correlacoes
