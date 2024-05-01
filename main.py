@@ -3,12 +3,8 @@ import numpy as np
 import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt 
-from utilities import preprocess_text, create_wordcloud, freq_words, ordenar_palavras_frequencia
-from utilities import carregar_palavras_csv, calcular_distancia_entre_palavras, correlacao_conjuntos
-from utilities import mesclar_csv, distancia_jaccard
-from utilities import distancia_chebyshev, distancia_euclidiana, distancia_manhattan
 import time
-
+import utilities.utilities as u
 from nltk.tokenize import word_tokenize
 from nltk.probability import FreqDist
 
@@ -76,21 +72,21 @@ def main():
    df_fake=pd.read_csv('cleaned_data/fake_palavras_frequentes.csv')
    df_real=pd.read_csv('cleaned_data/real_palavras_frequentes.csv')
    
-   distancia_jaccard = distancia_jaccard(df_fake, df_real)
+   distancia_jaccard = u.distancia_jaccard(df_fake, df_real)
    print("Distância de Jaccard entre os conjuntos fake e real:", distancia_jaccard)
 
-
+   
    # ************************************************************
    # distancia euclidiana
-   distancia_euclidiana = distancia_euclidiana(df_fake, df_fake)
+   distancia_euclidiana = u.distancia_euclidiana(df_fake, df_fake)
    print("Distância Euclidiana entre os conjuntos fake e real:", distancia_euclidiana)
 
    # distancia de manhattan 
-   distancia_manhattan = distancia_manhattan(df_fake, df_real)
+   distancia_manhattan = u.distancia_manhattan(df_fake, df_real)
    print("Distância de Manhattan entre os conjuntos fake e real:", distancia_manhattan)
 
    # distancia de chebyshev
-   distancia_chebyshev = distancia_chebyshev(df_fake, df_real)
+   distancia_chebyshev = u.distancia_chebyshev(df_fake, df_real)
    print("Distância de Chebyshev entre os conjuntos fake e real:", distancia_chebyshev)
 
 

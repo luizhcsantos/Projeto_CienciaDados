@@ -1,0 +1,7 @@
+Tempo de término: 1714583155.145883
+Tempo total de execução: 1833.8741488456726
+
+Distância de Jaccard entre os conjuntos fake e real: 0.5325443786982249
+Distância Euclidiana entre os conjuntos fake e real: 0.0
+Distância de Manhattan entre os conjuntos fake e real: 775318
+Distância de Chebyshev entre os conjuntos fake e real: 15644
