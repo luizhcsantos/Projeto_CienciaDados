@@ -47,31 +47,27 @@ def main():
    fake_news = df_clean[df_clean['label'] == 0]['Text']
    real_news = ' '.join(df_clean[df_clean['label'] == 1]['Text'])
 
-   ## Juntar todas as fake news em uma única string
-   all_fake_news = ' '.join(fake_news)
+   # Criar uma lista com todas as palavras das fake news
+   all_words = ' '.join(fake_news).split()
 
-   # Tokenizar as palavras
-   tokens = word_tokenize(all_fake_news)
-
-   # Calcular a frequência de cada palavra
-   freq_dist = FreqDist(tokens)
+   # Contar a frequência das palavras
+   word_freq = Counter(all_words)
 
    # Filtrar as palavras com frequência maior que 5
-   palavras_frequentes = {palavra: freq for palavra, freq in freq_dist.items() if freq > 5}
+   filtered_word_freq = {word: freq for word, freq in word_freq.items() if freq > 5}
 
-   # Ordenar o dicionário de palavras frequentes pela frequência
-   palavras_frequentes_ordenadas = sorted(palavras_frequentes.items(), key=lambda x: x[1], reverse=True)
+   # Ordenar as palavras pela frequência
+   sorted_word_freq = sorted(filtered_word_freq.items(), key=lambda x: x[1], reverse=True)
 
-   # Exibir as palavras frequentes ordenadas
-   for palavra, frequencia in palavras_frequentes_ordenadas:
-      print(f"{palavra}: {frequencia}")
-   
+   # Mostrar as palavras ordenadas pela frequência
+   for word, freq in sorted_word_freq:
+      print(f'{word}: {freq}')
+
    # Converter o dicionário de palavras frequentes ordenadas em um DataFrame
-   df_palavras_frequentes = pd.DataFrame(palavras_frequentes_ordenadas, columns=['Palavra', 'Frequência'])
+   df_palavras_frequentes = pd.DataFrame(sorted_word_freq, columns=['Word', 'Frequency'])
 
    # Salvar o DataFrame em um arquivo CSV
-   df_palavras_frequentes.to_csv('cleaned_data/palavras_frequentes.csv', index=False)
-   
+   df_palavras_frequentes.to_csv('cleaned_data/palavras_frequentes2.csv', index=False)
 
 if __name__ == "__main__":
     main()
