@@ -48,6 +48,17 @@ def create_wordcloud(text):
     
     return wordcloud 
 
+def contagem_palavras(text):
+    #print(text)
+
+    count = 0   
+    for w1 in text: 
+        w2 = w1.split()
+        for word in w2:
+            count += 1
+
+    return count 
+
 
 def freq_words(text):
 

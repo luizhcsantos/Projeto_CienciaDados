@@ -66,28 +66,68 @@ def main():
    # df_palavras_frequentes.to_csv('cleaned_data/real_palavras_frequentes.csv', index=False)
 
    # ***********************************************************
+
+   # contagem de palavras por cada categoria (fake, real)
+
+   # df_clean = pd.read_csv('cleaned_data/dados_limpos.csv')
+
+   random_words = ['apple', 'banana', 'orange', 'grape', 'pineapple']
+
+   # Criando uma lista de labels aleatórios (0 ou 1)
+   labels = np.random.randint(2, size=5)
+
+  # Criando uma lista para armazenar as linhas do DataFrame
+   data = []
+
+   # Criando o DataFrame
+   for _ in range(5):
+      # Gerando uma quantidade aleatória de palavras para cada linha
+      num_words = np.random.randint(1, 4)  # Aqui, geramos de 1 a 3 palavras por linha
+      words = np.random.choice(random_words, size=num_words)
+      text = ' '.join(words)
+      # Gerando um label aleatório (0 ou 1)
+      label = np.random.randint(2)
+      data.append({'Text': text, 'label': label})
+
+   df_clean = pd.DataFrame(data)
+   
+   df_clean.to_csv('cleaned_data/Pasta1.csv', index=False)
+
+   df_clean = pd.read_csv('cleaned_data/Pasta1.csv')
+
+   fake_news = df_clean[df_clean['label'] == 0]['Text']
+   real_news = df_clean[df_clean['label'] == 1]['Text']
+
+   count_fake = u.contagem_palavras(fake_news)
+   count_real = u.contagem_palavras(real_news)
+
+   print("qtde palavras noticias fake: ", count_fake, "\nqtde palavras noticias reais: ", count_real)
+
+   # print("qtde palavras noticias fake: ", len(fake_news), "\nqtde palavras noticias reais: ", len(real_news))
+
+   # ***********************************************************
    # calculo de distancias 
 
    # distancia de jaccard entre as palavras unicas nos conjuntos de palavras presentes nas noticias reais e fake 
-   df_fake=pd.read_csv('cleaned_data/fake_palavras_frequentes.csv')
-   df_real=pd.read_csv('cleaned_data/real_palavras_frequentes.csv')
+   # df_fake=pd.read_csv('cleaned_data/fake_palavras_frequentes.csv')
+   # df_real=pd.read_csv('cleaned_data/real_palavras_frequentes.csv')
    
-   distancia_jaccard = u.distancia_jaccard(df_fake, df_real)
-   print("Distância de Jaccard entre os conjuntos fake e real:", distancia_jaccard)
+   # distancia_jaccard = u.distancia_jaccard(df_fake, df_real)
+   # print("Distância de Jaccard entre os conjuntos fake e real:", distancia_jaccard)
 
    
    # ************************************************************
    # distancia euclidiana
-   distancia_euclidiana = u.distancia_euclidiana(df_fake, df_fake)
-   print("Distância Euclidiana entre os conjuntos fake e real:", distancia_euclidiana)
+   # distancia_euclidiana = u.distancia_euclidiana(df_fake, df_fake)
+   # print("Distância Euclidiana entre os conjuntos fake e real:", distancia_euclidiana)
 
-   # distancia de manhattan 
-   distancia_manhattan = u.distancia_manhattan(df_fake, df_real)
-   print("Distância de Manhattan entre os conjuntos fake e real:", distancia_manhattan)
+   # # distancia de manhattan 
+   # distancia_manhattan = u.distancia_manhattan(df_fake, df_real)
+   # print("Distância de Manhattan entre os conjuntos fake e real:", distancia_manhattan)
 
-   # distancia de chebyshev
-   distancia_chebyshev = u.distancia_chebyshev(df_fake, df_real)
-   print("Distância de Chebyshev entre os conjuntos fake e real:", distancia_chebyshev)
+   # # distancia de chebyshev
+   # distancia_chebyshev = u.distancia_chebyshev(df_fake, df_real)
+   # print("Distância de Chebyshev entre os conjuntos fake e real:", distancia_chebyshev)
 
 
 if __name__ == "__main__":
