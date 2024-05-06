@@ -7,6 +7,10 @@ import time
 import utilities.utilities as u
 from nltk.tokenize import word_tokenize
 from nltk.probability import FreqDist
+from matplotlib import pyplot as plt
+from wordcloud import WordCloud
+from matplotlib import colormaps
+import matplotlib.animation as animation
 
 def main():
 
@@ -71,29 +75,7 @@ def main():
 
    # df_clean = pd.read_csv('cleaned_data/dados_limpos.csv')
 
-   random_words = ['apple', 'banana', 'orange', 'grape', 'pineapple']
-
-   # Criando uma lista de labels aleatórios (0 ou 1)
-   labels = np.random.randint(2, size=5)
-
-  # Criando uma lista para armazenar as linhas do DataFrame
-   data = []
-
-   # Criando o DataFrame
-   for _ in range(5):
-      # Gerando uma quantidade aleatória de palavras para cada linha
-      num_words = np.random.randint(1, 4)  # Aqui, geramos de 1 a 3 palavras por linha
-      words = np.random.choice(random_words, size=num_words)
-      text = ' '.join(words)
-      # Gerando um label aleatório (0 ou 1)
-      label = np.random.randint(2)
-      data.append({'Text': text, 'label': label})
-
-   df_clean = pd.DataFrame(data)
-   
-   df_clean.to_csv('cleaned_data/Pasta1.csv', index=False)
-
-   df_clean = pd.read_csv('cleaned_data/Pasta1.csv')
+   df_clean = pd.read_csv('cleaned_data/dados_limpos.csv')
 
    fake_news = df_clean[df_clean['label'] == 0]['Text']
    real_news = df_clean[df_clean['label'] == 1]['Text']
@@ -102,8 +84,6 @@ def main():
    count_real = u.contagem_palavras(real_news)
 
    print("qtde palavras noticias fake: ", count_fake, "\nqtde palavras noticias reais: ", count_real)
-
-   # print("qtde palavras noticias fake: ", len(fake_news), "\nqtde palavras noticias reais: ", len(real_news))
 
    # ***********************************************************
    # calculo de distancias 
@@ -128,6 +108,99 @@ def main():
    # # distancia de chebyshev
    # distancia_chebyshev = u.distancia_chebyshev(df_fake, df_real)
    # print("Distância de Chebyshev entre os conjuntos fake e real:", distancia_chebyshev)
+
+   # ***********************************************************
+
+   # Gráficos 
+   # 1.Histograma - Contagem de noticias por rlabel - real/fake
+
+   # plt.figure(figsize=(10, 6))
+   # sns.countplot(data=df_clean, x="label", hue="label")
+   # plt.title("Contagem de Noticias por label")
+   # plt.xlabel("Real ou Fake?")
+   # plt.ylabel("Contagem")
+   # plt.legend(title="Veracidade da informação")
+   # plt.savefig('images/cont_noticias_label.png', dpi=300)
+
+   # **************************************
+   # Gráfico de Barras - contagens da quantidade de palavras por cada categoria de noticia
+   
+   # contagens = [count_real, count_fake]
+   # plt.bar(['Noticias Reais', 'Noticias fake'], contagens, color=['green', 'purple'], align='edge', width=1.2)
+   # plt.title('Contagem de Palavras em Notícias Reais e Fakes')
+   # plt.xlabel('Tipo de Notícia')
+   # plt.ylabel('Contagem de Palavras')
+   # plt.savefig('images/cont_palavras_label.png', dpi=300)
+   # plt.show()
+
+   # ***************************************************** 
+   # Wordcloud - Nuvem de palavras para noticias reais e fake
+   
+   # real_news_copy = ' '.join(real_news)
+   # wordcloud_real = WordCloud(width=800, height=400, background_color ='white', max_words=2000).generate(real_news_copy)
+
+   # wordcloud para noticias reais
+   # plt.figure(figsize=(10, 6))
+   # plt.imshow(wordcloud_real, interpolation='bilinear')
+   # plt.axis('off')
+   # plt.title("Nuvem de palavras das noticias marcadas como 'Real'")
+   # plt.savefig('images/wordcloud_real.png', dpi=300)
+   # plt.show()
+
+   # wordcloud para noticias fake 
+   # fake_news_copy = ' '.join(fake_news)
+   # wordcloud_fake = WordCloud(width=800, height=400, background_color ='white', max_words=2000).generate(fake_news_copy)
+
+   # plt.figure(figsize=(10, 6))
+   # plt.imshow(wordcloud_fake, interpolation='bilinear')
+   # plt.axis('off')
+   # plt.title("Nuvem de palavras das noticias marcadas como 'Fake'")
+   # plt.savefig('images/wordcloud_fake.png', dpi=300)
+   # plt.show()
+
+   # *************************************************************
+
+   # Histograma de comprimento de texto
+   df_clean['Text_length'] = df_clean['Text'].apply(len)
+   # df_clean.to_csv('cleaned_data/dados_limpos.csv', index=False)
+
+   # Filtrando dados para notícias reais e falsas
+   # real_len = df_clean[df_clean['label'] == 1]['Text_length']
+   # fake_len = df_clean[df_clean['label'] == 0]['Text_length']
+
+   # # ignora valores maiores que 8000 
+   # real_len_limpo = real_len[real_len <= 8000]
+   # fake_len_limpo = fake_len[fake_len <= 8000]
+
+   # plt.figure(figsize=(12, 6))
+
+   # plt.subplot(1, 2, 1)  # Subplot para notícias reais
+   # plt.hist(real_len_limpo, bins=25, color='green', alpha=0.7, ec='black')
+   # plt.title('Distribuição do Comprimento das Notícias Reais')
+   # plt.xlabel('Comprimento do Texto')
+   # plt.ylabel('Frequência')
+
+   # plt.subplot(1, 2, 2)  # Subplot para notícias falsas
+   # plt.hist(fake_len_limpo, bins=25, color='purple', alpha=0.7, ec='black', density=True)
+   # plt.title('Distribuição do Comprimento das Notícias Falsas')
+   # plt.xlabel('Comprimento do Texto')
+   # plt.ylabel('Frequência')
+
+   # plt.tight_layout()  # Ajusta automaticamente os subplots para evitar sobreposição
+   # plt.savefig('images/dist_comp_news.png', dpi=300)
+   # plt.show()
+
+   # ***********************************************************
+   # Boxplot da distribuição do comprimento das noticias
+
+   plt.figure(figsize=(8, 6))
+   sns.boxplot(x='label', y='Text_length', data=df_clean, palette={'1': 'green', '0': 'orange'}, showfliers=False)
+   plt.title('Distribuição do Comprimento das Notícias')
+   plt.xlabel('Categoria "Fake" ou "Real"')
+   plt.ylabel('Comprimento do Texto')
+   plt.savefig('images/boxplot_comp.png', dpi=300)
+   plt.show()
+
 
 
 if __name__ == "__main__":
