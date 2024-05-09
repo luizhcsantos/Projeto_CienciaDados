@@ -14,6 +14,7 @@ from scipy.stats import pearsonr
 
 nltk.data.path.append(os.path.join(os.getcwd(), 'nltk_data'))
 nltk.download('popular', download_dir='nltk_data')
+nltk.download('vader_lexicon', download_dir='nltk_data')
 
 
 def preprocess_text(text):
@@ -94,7 +95,7 @@ def carregar_palavras_csv(nome_arquivo):
     return word_freq
 
 
-def calcular_distancia_entre_palavras(fake_freq, real_freq):
+def calcular_distancia_palavras(fake_freq, real_freq):
     fake_words = list(fake_freq.keys())
     real_words = list(real_freq.keys())
     
@@ -216,3 +217,4 @@ def distancia_chebyshev(df_fake, df_real):
                          for word in fake_word_set.intersection(real_word_set))
 
     return max_difference
+

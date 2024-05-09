@@ -1,12 +1,14 @@
 from collections import Counter
 import numpy as np
 import pandas as pd
+from requests import head
 import seaborn as sns
 import matplotlib.pyplot as plt 
 import time
 import utilities.utilities as u
 from nltk.tokenize import word_tokenize
 from nltk.probability import FreqDist
+from nltk.sentiment.vader import SentimentIntensityAnalyzer
 from matplotlib import pyplot as plt
 from wordcloud import WordCloud
 from matplotlib import colormaps
@@ -15,7 +17,8 @@ import matplotlib.animation as animation
 def main():
 
    # limpeza do texto 
-   # df_original=pd.read_csv('data/fake_and_real_news.csv')
+   df_original=pd.read_csv('data/fake_and_real_news.csv')
+   print(df_original['Text'][1], df_original['label'][1])
    
    # inicio = time.time()
    # print("Tempo de início:", inicio)
@@ -75,15 +78,15 @@ def main():
 
    # df_clean = pd.read_csv('cleaned_data/dados_limpos.csv')
 
-   df_clean = pd.read_csv('cleaned_data/dados_limpos.csv')
+   # df_clean = pd.read_csv('cleaned_data/dados_limpos.csv')
 
-   fake_news = df_clean[df_clean['label'] == 0]['Text']
-   real_news = df_clean[df_clean['label'] == 1]['Text']
+   # fake_news = df_clean[df_clean['label'] == 0]['Text']
+   # real_news = df_clean[df_clean['label'] == 1]['Text']
 
-   count_fake = u.contagem_palavras(fake_news)
-   count_real = u.contagem_palavras(real_news)
+   # count_fake = u.contagem_palavras(fake_news)
+   # count_real = u.contagem_palavras(real_news)
 
-   print("qtde palavras noticias fake: ", count_fake, "\nqtde palavras noticias reais: ", count_real)
+   # print("qtde palavras noticias fake: ", count_fake, "\nqtde palavras noticias reais: ", count_real)
 
    # ***********************************************************
    # calculo de distancias 
@@ -161,7 +164,7 @@ def main():
    # *************************************************************
 
    # Histograma de comprimento de texto
-   df_clean['Text_length'] = df_clean['Text'].apply(len)
+   # df_clean['Text_length'] = df_clean['Text'].apply(len)
    # df_clean.to_csv('cleaned_data/dados_limpos.csv', index=False)
 
    # Filtrando dados para notícias reais e falsas
@@ -193,13 +196,62 @@ def main():
    # ***********************************************************
    # Boxplot da distribuição do comprimento das noticias
 
-   plt.figure(figsize=(8, 6))
-   sns.boxplot(x='label', y='Text_length', data=df_clean, palette={'1': 'green', '0': 'orange'}, showfliers=False)
-   plt.title('Distribuição do Comprimento das Notícias')
-   plt.xlabel('Categoria "Fake" ou "Real"')
-   plt.ylabel('Comprimento do Texto')
-   plt.savefig('images/boxplot_comp.png', dpi=300)
-   plt.show()
+   # plt.figure(figsize=(8, 6))
+   # sns.boxplot(x='label', y='Text_length', data=df_clean, palette={'1': 'green', '0': 'orange'}, showfliers=False)
+   # plt.title('Distribuição do Comprimento das Notícias')
+   # plt.xlabel('Categoria "Fake" ou "Real"')
+   # plt.ylabel('Comprimento do Texto')
+   # plt.savefig('images/boxplot_comp.png', dpi=300)
+   # plt.show()
+
+   # df_original = pd.read_csv('data/fake_and_real_news.csv')
+   # noticias_reais = df_original[df_original['label'] == 'Real']
+
+   df_freq = pd.read_csv('cleaned_data/merged_freq.csv')
+
+   # media_real = np.mean(df_freq['Frequency_real'])
+   # media_fake = np.mean(df_freq['Frequency_fake'])
+
+   # df_freq.describe().to_csv('analysis/df_describe.csv')
+
+   # plt.figure(figsize=(10, 6))
+   # sns.heatmap(df_freq[['Frequency_fake', 'Frequency_real']].corr(), annot=True, cmap="coolwarm", linewidths=0.5)
+   # plt.title("Correlação entre Variáveis")
+   # plt.savefig('images/corr.png', dpi=300)
+   # plt.show()
+
+   df_clean = pd.read_csv('cleaned_data/dados_limpos.csv')
+
+   # real_len = df_clean[df_clean['label'] == 1]['Text_length']
+   # fake_len = df_clean[df_clean['label'] == 0]['Text_length']
+
+   # desc_stats_real = df_freq['Frequency_real'].describe()
+   # desc_stats_fake = df_freq['Frequency_fake'].describe()   
+
+   # total_size_real = df_freq['Frequency_real'].sum()
+   # total_size_fake = df_freq['Frequency_fake'].sum()
+
+   # desc_df = pd.DataFrame({
+   #  'Statistic': ['Size', 'Mean', 'Median', 'Std', 'Min', 'Max'],
+   #  'Real': [total_size_real, desc_stats_real['mean'], desc_stats_real['50%'], desc_stats_real['std'], desc_stats_real['min'], desc_stats_real['max']],
+   #  'Fake': [total_size_fake, desc_stats_fake['mean'], desc_stats_fake['50%'], desc_stats_fake['std'], desc_stats_fake['min'], desc_stats_fake['max']]
+   # })
+
+   # correlation_matrix = df_freq[['Frequency_real', 'Frequency_fake']].corr()
+
+   # # Plotando o heatmap
+   # plt.figure(figsize=(10, 8))
+   # # sns.heatmap(correlation_matrix, annot=True, cmap='coolwarm', fmt=".2f")
+   # sns.heatmap(desc_df.set_index('Statistic'), annot=True, fmt=".2f", linewidths=.5, linecolor='black')
+   # plt.title('Correlation and Descriptive Statistics')
+   # plt.show()
+
+   sid = SentimentIntensityAnalyzer()
+   message_text = df_original['Text'][0]
+   scores = sid.polarity_scores(message_text)
+
+   for key in sorted(scores):
+      print('{0}: {1}, '.format(key, scores[key]), end='')
 
 
 
