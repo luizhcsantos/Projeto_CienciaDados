@@ -15,7 +15,7 @@ from scipy.stats import pearsonr
 nltk.data.path.append(os.path.join(os.getcwd(), 'nltk_data'))
 nltk.download('popular', download_dir='nltk_data')
 nltk.download('vader_lexicon', download_dir='nltk_data')
-
+from nltk.sentiment.vader import SentimentIntensityAnalyzer
 
 def preprocess_text(text):
 
@@ -55,7 +55,7 @@ def contagem_palavras(text):
     count = 0   
     for w1 in text: 
         w2 = w1.split()
-        for word in w2:
+        for _ in w2:
             count += 1
 
     return count 
@@ -218,3 +218,7 @@ def distancia_chebyshev(df_fake, df_real):
 
     return max_difference
 
+
+def get_sentiment_scores(text):
+    sid = SentimentIntensityAnalyzer()
+    return sid.polarity_scores(text)
