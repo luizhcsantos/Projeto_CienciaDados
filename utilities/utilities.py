@@ -37,8 +37,8 @@ def preprocess_text(text):
     cleaned_text = ' '.join(words)
 
     # stemming das palavras
-    porter = PorterStemmer()
-    cleaned_text = [porter.stem(word) for word in words]
+    # porter = PorterStemmer()
+    # cleaned_text = [porter.stem(word) for word in words]
 
     return cleaned_text
 
